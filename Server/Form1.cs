@@ -1,4 +1,4 @@
-using System.Net;
+Ôªøusing System.Net;
 using System.Net.Sockets;
 using System.Text;
 
@@ -27,7 +27,7 @@ namespace Server
                 Socket listener = new Socket(ad.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
                 listener.Bind(ep);
                 listener.Listen(20);
-                listBox1.Items.Add("—ÎÛ¯‡ÂÏ " + ep);
+                listBox1.Items.Add("–°–ª—É—à–∞–µ–º " + ep);
                 Socket handler;
                 while (true)
                 {
@@ -38,7 +38,7 @@ namespace Server
                     var st = Encoding.UTF8.GetString(bytes, 0, count);
                     listBox1.Items.Add(st);
                     data += Encoding.UTF8.GetString(bytes, 0, count);
-                    string replay = "—Ô‡ÒË·Ó Á‡ " + data;
+                    string replay = "–°–ø–∞—Å–∏–±–æ –∑–∞ " + data;
                     byte[] response = Encoding.UTF8.GetBytes(replay);
                     handler.Send(response);
                     handler.Shutdown(SocketShutdown.Both);
@@ -57,7 +57,7 @@ namespace Server
                 Socket listener = new Socket(ad.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
                 listener.Bind(ep);
                 listener.Listen(20);
-                listBox1.Items.Add("—ÎÛ¯‡ÂÏ " + ep);
+                listBox1.Items.Add("–°–ª—É—à–∞–µ–º " + ep);
                 Socket handler;
                 while (true)
                 {
@@ -68,11 +68,55 @@ namespace Server
                     var st = Encoding.UTF8.GetString(bytes, 0, count);
                     listBox1.Items.Add(st);
                     data += Encoding.UTF8.GetString(bytes, 0, count);
-                    string replay = "—Ô‡ÒË·Ó Á‡ " + data;
+                    string replay = "–°–ø–∞—Å–∏–±–æ –∑–∞ " + data;
                     byte[] response = Encoding.UTF8.GetBytes(replay);
                     handler.Send(response);
                     handler.Shutdown(SocketShutdown.Both);
                     handler.Close();
+                }
+            });
+        }
+
+        async Task StartServer2()
+        {
+            await Task.Run(() =>
+            {
+                TcpListener tcpListener = null;
+                try
+                {
+                    IPAddress localAddr = IPAddress.Parse("127.0.0.1");
+                    tcpListener = new TcpListener(localAddr, int.Parse(tbPort.Text) + 1);
+
+                    // –∑–∞–ø–∫—Å–∫ —Å–ª—É—à–∞—Ç–µ–ª—è
+                    tcpListener.Start();
+                    listBox1.Items.Add("–°–ª—É—à–∞–µ–º .....");
+
+                    while (true)
+                    {
+                        TcpClient client = tcpListener.AcceptTcpClient();
+                        NetworkStream stream = client.GetStream();
+
+                        StreamReader reader = new StreamReader(stream);
+                        string message = reader.ReadLine();
+                        listBox1.Items.Add("–°–ø–∞—Å–∏–±–æ: " + message);
+
+                        StreamWriter writer = new StreamWriter(stream);
+                        //writer.WriteLine(tb _text.Text + message);
+
+                        writer.Close();
+                        reader.Close();
+                        stream.Close();
+                        client.Close();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                finally
+                {
+                    if (tcpListener != null)
+                        tcpListener.Stop();
                 }
             });
         }
@@ -84,6 +128,11 @@ namespace Server
         private void button2_Click(object sender, EventArgs e)
         {
             StartServerToFile();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            StartServer2();
         }
     }
 }

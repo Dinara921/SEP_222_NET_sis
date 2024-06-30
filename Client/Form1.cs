@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.IO.Compression;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
@@ -13,7 +14,7 @@ namespace Client
 
         private void button1_Click(object sender, EventArgs e)
         {
-            SendToServer();       
+            SendToServer();
         }
 
         async Task SendToServer()
@@ -25,7 +26,7 @@ namespace Client
                 var ad = ip.AddressList[0];
                 var ep = new IPEndPoint(ad, int.Parse(tbPort.Text));
                 Socket sender = new Socket(ad.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                sender.Connect(ep); 
+                sender.Connect(ep);
                 byte[] msg = Encoding.UTF8.GetBytes(tbMessage.Text);
                 int count = sender.Send(msg);
                 count = sender.Receive(bytes);
@@ -45,7 +46,7 @@ namespace Client
                 var ep = new IPEndPoint(ad, int.Parse(tbPort.Text));
                 Socket sender = new Socket(ad.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
                 sender.Connect(ep);
-                string filePath = @"C:\Users\ЖиенбаеваД\Desktop\info.txt.txt";
+                string filePath = @"C:\Users\dinas\Desktop\1.txt";
                 byte[] msg = System.IO.File.ReadAllBytes(filePath);
 
                 //byte[] msg = Encoding.UTF8.GetBytes(tbMessage.Text);
@@ -98,8 +99,49 @@ namespace Client
                 }
 
             });
-
         }
+
+        async Task SendToServer3()
+        {
+            await Task.Run(() =>
+            {
+                TcpClient client = null;
+                try
+                {
+                    string filePath = @"C:\Users\dinas\Desktop\1.txt"; 
+                    client = new TcpClient("127.0.0.1", int.Parse(tbPort.Text) + 1);
+                    NetworkStream stream = client.GetStream();
+
+                    byte[] fileNameBytes = Encoding.UTF8.GetBytes(Path.GetFileName(filePath));
+                    stream.Write(fileNameBytes, 0, fileNameBytes.Length);
+
+                    using (FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                    {
+                        fileStream.CopyTo(stream);
+                    }
+
+                    byte[] compressedData = new byte[4096];
+                    int bytesRead = stream.Read(compressedData, 0, compressedData.Length);
+
+                    File.WriteAllBytes("archived_file.zip", compressedData);
+
+                    listBox1.Items.Add("Файл успешно отправлен и получен архивированный файл.");
+
+                    stream.Close();
+                }
+                catch (Exception ex)
+                {
+                    listBox1.Items.Add("Ошибка: " + ex.Message);
+                }
+                finally
+                {
+                    if (client != null)
+                        client.Close();
+                }
+            });
+        }
+
+
         private void button1_Click_1(object sender, EventArgs e)
         {
 
@@ -117,7 +159,12 @@ namespace Client
 
         private void button3_Click(object sender, EventArgs e)
         {
-            SendToServer2();
+            //SendToServer2();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            SendToServer3();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.IO.Compression;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
@@ -77,7 +78,51 @@ namespace Server
             });
         }
 
-        async Task StartServer2()
+        //async Task StartServer2()
+        //{
+        //    await Task.Run(() =>
+        //    {
+        //        TcpListener tcpListener = null;
+        //        try
+        //        {
+        //            IPAddress localAddr = IPAddress.Parse("127.0.0.1");
+        //            tcpListener = new TcpListener(localAddr, int.Parse(tbPort.Text) + 1);
+
+        //            // запкск слушателя
+        //            tcpListener.Start();
+        //            listBox1.Items.Add("Слушаем .....");
+
+        //            while (true)
+        //            {
+        //                TcpClient client = tcpListener.AcceptTcpClient();
+        //                NetworkStream stream = client.GetStream();
+
+        //                StreamReader reader = new StreamReader(stream);
+        //                string message = reader.ReadLine();
+        //                listBox1.Items.Add("Спасибо: " + message);
+
+        //                StreamWriter writer = new StreamWriter(stream);
+        //                //writer.WriteLine(tb _text.Text + message);
+
+        //                writer.Close();
+        //                reader.Close();
+        //                stream.Close();
+        //                client.Close();
+        //            }
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            Console.WriteLine(e.Message);
+        //        }
+        //        finally
+        //        {
+        //            if (tcpListener != null)
+        //                tcpListener.Stop();
+        //        }
+        //    });
+        //}
+
+        async Task StartServer3()
         {
             await Task.Run(() =>
             {
@@ -87,7 +132,9 @@ namespace Server
                     IPAddress localAddr = IPAddress.Parse("127.0.0.1");
                     tcpListener = new TcpListener(localAddr, int.Parse(tbPort.Text) + 1);
 
-                    // запкск слушателя
+                    tcpListener.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+
+                    // Запуск слушателя
                     tcpListener.Start();
                     listBox1.Items.Add("Слушаем .....");
 
@@ -96,22 +143,46 @@ namespace Server
                         TcpClient client = tcpListener.AcceptTcpClient();
                         NetworkStream stream = client.GetStream();
 
-                        StreamReader reader = new StreamReader(stream);
-                        string message = reader.ReadLine();
-                        listBox1.Items.Add("Спасибо: " + message);
+                        byte[] fileNameBytes = new byte[4096];
+                        int fileNameBytesRead = stream.Read(fileNameBytes, 0, fileNameBytes.Length);
+                        string fileName = Encoding.UTF8.GetString(fileNameBytes, 0, fileNameBytesRead);
 
-                        StreamWriter writer = new StreamWriter(stream);
-                        //writer.WriteLine(tb _text.Text + message);
+                        byte[] fileData = new byte[4096];
+                        using (MemoryStream ms = new MemoryStream())
+                        {
+                            int bytesRead;
+                            while ((bytesRead = stream.Read(fileData, 0, fileData.Length)) > 0)
+                            {
+                                ms.Write(fileData, 0, bytesRead);
+                            }
 
-                        writer.Close();
-                        reader.Close();
+                            byte[] dataToCompress = ms.ToArray();
+                            using (MemoryStream compressedStream = new MemoryStream())
+                            {
+                                using (ZipArchive archive = new ZipArchive(compressedStream, ZipArchiveMode.Create, true))
+                                {
+                                    ZipArchiveEntry zipEntry = archive.CreateEntry(fileName);
+                                    using (Stream entryStream = zipEntry.Open())
+                                    {
+                                        entryStream.Write(dataToCompress, 0, dataToCompress.Length);
+                                    }
+                                }
+
+                                byte[] compressedData = compressedStream.ToArray();
+
+                                stream.Write(compressedData, 0, compressedData.Length);
+                            }
+                        }
+
+                        listBox1.Items.Add($"Файл '{fileName}' получен, архивирован и отправлен обратно клиенту.");
+
                         stream.Close();
                         client.Close();
                     }
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    listBox1.Items.Add("Ошибка: " + e.Message);
                 }
                 finally
                 {
@@ -120,6 +191,7 @@ namespace Server
                 }
             });
         }
+
         private void button1_Click_1(object sender, EventArgs e)
         {
 
@@ -132,7 +204,12 @@ namespace Server
 
         private void button3_Click(object sender, EventArgs e)
         {
-            StartServer2();
+            //StartServer2();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            StartServer3();
         }
     }
 }

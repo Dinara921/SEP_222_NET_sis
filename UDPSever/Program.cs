@@ -1,5 +1,7 @@
-﻿using System.Net;
+﻿using System.Net.Sockets;
+using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
 namespace UDPServer
 {
@@ -7,12 +9,29 @@ namespace UDPServer
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(UDP.GetLocalIPAddress());
+            UDP.Listen();
         }
     }
 
     class UDP
     {
+        public static void Listen()
+        {
+            int PORT = 8001;
+            UdpClient udpClient = new UdpClient();
+            udpClient.Client.Bind(new IPEndPoint(IPAddress.Any, PORT));
+            Console.WriteLine("Listening...");
+            var from = new IPEndPoint(0, 0);
+            var task = Task.Run(() =>
+            {
+                while (true)
+                {
+                    var recvBuffer = udpClient.Receive(ref from);
+                    Console.WriteLine(Encoding.UTF8.GetString(recvBuffer));
+                }
+            });
+            task.Wait();
+        }
         public static string GetLocalIPAddress()
         {
             var host = Dns.GetHostEntry(Dns.GetHostName());

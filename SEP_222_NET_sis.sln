@@ -7,9 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "Server\Server.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "Client\Client.csproj", "{C2769740-83D1-4628-AFAA-EB1D22625F82}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyHTTP", "MyHTTP\MyHTTP.csproj", "{A03776DD-8251-446F-83C9-40363E32BF4E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyHTTP", "MyHTTP\MyHTTP.csproj", "{A03776DD-8251-446F-83C9-40363E32BF4E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UDPServer", "UDPSever\UDPServer.csproj", "{F6832E78-AB7F-4829-B541-B42118EF358B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UDPServer", "UDPSever\UDPServer.csproj", "{F6832E78-AB7F-4829-B541-B42118EF358B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HTTP_Server_HW", "HTTP_Server_HW\HTTP_Server_HW.csproj", "{0945D842-53A0-468C-AED4-80B1055B2EA4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestSharpExample", "RestSharpExample\RestSharpExample.csproj", "{6BB9CBA4-2F13-417F-BEC3-F074415E0539}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{F6832E78-AB7F-4829-B541-B42118EF358B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6832E78-AB7F-4829-B541-B42118EF358B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6832E78-AB7F-4829-B541-B42118EF358B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0945D842-53A0-468C-AED4-80B1055B2EA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0945D842-53A0-468C-AED4-80B1055B2EA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0945D842-53A0-468C-AED4-80B1055B2EA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0945D842-53A0-468C-AED4-80B1055B2EA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BB9CBA4-2F13-417F-BEC3-F074415E0539}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BB9CBA4-2F13-417F-BEC3-F074415E0539}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BB9CBA4-2F13-417F-BEC3-F074415E0539}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BB9CBA4-2F13-417F-BEC3-F074415E0539}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

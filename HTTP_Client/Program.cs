@@ -23,7 +23,7 @@ namespace HTTP_Client
             {
                 var result = await client.GetAsync("https://www.google.com/");
 
-                //    //var result = response.Content.ReadAsStringAsync().Result;
+                //var result = response.Content.ReadAsStringAsync().Result;
                 using (StreamReader sr = new StreamReader(await result.Content.ReadAsStreamAsync()))
                 {
                     string result2 = sr.ReadToEnd();

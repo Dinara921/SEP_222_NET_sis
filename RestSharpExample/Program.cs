@@ -6,10 +6,8 @@ namespace RestSharpExample
     {
         static void Main(string[] args)
         {
-            // Отправка GET запроса на http://localhost:12345/5
             TestGetFactorial(5);
 
-            // Отправка POST запроса на http://localhost:12346/
             TestPostFactorial(5);
         }
 

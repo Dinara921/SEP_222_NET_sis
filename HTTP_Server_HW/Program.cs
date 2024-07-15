@@ -8,8 +8,8 @@ namespace HTTP_Server_HW
         static Thread threawdListener;
         static void Main(string[] args)
         {
-            //threawdListener = new Thread(new ParameterizedThreadStart(Start));
-            //threawdListener.Start("http://localhost:12345/");
+            threawdListener = new Thread(new ParameterizedThreadStart(Start));
+            threawdListener.Start("http://localhost:12345/");
             threawdListener = new Thread(new ParameterizedThreadStart(Start2));
             threawdListener.Start("http://localhost:12346/");
         }

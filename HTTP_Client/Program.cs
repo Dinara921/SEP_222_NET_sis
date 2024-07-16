@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using HtmlAgilityPack;
+using System.Net;
 
 namespace HTTP_Client
 {
@@ -6,7 +7,7 @@ namespace HTTP_Client
     {
         static void Main(string[] args)
         {
-            Method_3();
+            Method_4();  
         }
 
         static async Task<string> Method_1()
@@ -47,6 +48,41 @@ namespace HTTP_Client
                 File.WriteAllBytes("c:\\temp\\123.mp3", result);
 
             }
+        }
+
+        static void Method_4()
+        {
+            DateTime dt = DateTime.Now;
+            var html = @"https://www.nationalbank.kz/ru/exchangerates/ezhednevnye-oficialnye-rynochnye-kursy-valyut";
+            HtmlWeb web = new HtmlWeb();
+            var htmlDoc = web.Load(html);
+            var htmlBody = htmlDoc.DocumentNode.SelectSingleNode("/html/body/div[1]/main/section/div/div/div[2]/div/form/div[2]/table/tbody");
+            HtmlNodeCollection childNodes = htmlBody.ChildNodes;
+            var names = new List<string>() { "1 ДОЛЛАР США", "1 ЕВРО", "1 РОССИЙСКИЙ РУБЛЬ", "1 ФУНТ СТЕРЛИНГОВ СОЕДИНЕННОГО КОРОЛЕВСТВА" };
+            var exchangeRates = new Dictionary<string, string>
+            {
+                { "1 ДОЛЛАР США", "" },
+                { "1 ЕВРО", "" },
+                { "1 РОССИЙСКИЙ РУБЛЬ", "" },
+                { "1 ФУНТ СТЕРЛИНГОВ СОЕДИНЕННОГО КОРОЛЕВСТВА", "" }
+            };
+            foreach (var node in childNodes)
+            {
+                if (node.InnerHtml == "\n                            " || node.InnerHtml == "\n                        ")
+                    continue;
+                var inNode = node.InnerHtml;
+                var valute = inNode.Split("td")[3].Split(">")[1].Split("<")[0];
+                var tg = inNode.Split("td")[7].Split(">")[1].Split("<")[0];
+                if (exchangeRates.ContainsKey(valute))
+                {
+                    exchangeRates[valute] = tg;
+                }
+            }
+            Console.WriteLine($"Дата: {dt.ToShortDateString()}");
+            Console.WriteLine($"1 USD - {exchangeRates["1 ДОЛЛАР США"]} ТЕНГЕ");
+            Console.WriteLine($"1 EUR - {exchangeRates["1 ЕВРО"]} ТЕНГЕ");
+            Console.WriteLine($"1 RUB - {exchangeRates["1 РОССИЙСКИЙ РУБЛЬ"]} ТЕНГЕ");
+            Console.WriteLine($"1 GBP - {exchangeRates["1 ФУНТ СТЕРЛИНГОВ СОЕДИНЕННОГО КОРОЛЕВСТВА"]} ТЕНГЕ");
         }
     }
 }

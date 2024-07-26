@@ -1,4 +1,7 @@
-﻿using System.Net.Mail;
+﻿using MailKit;
+using MailKit.Net.Imap;
+using MailKit.Search;
+using System.Net.Mail;
 
 namespace MySMTP
 {
@@ -7,7 +10,33 @@ namespace MySMTP
         ////https://help.mail.ru/mail/mailer/popsmtp
         static void Main(string[] args)
         {
-            MailSend.Send();
+            //MailSend.Send();
+            MailKit.Start();
+        }
+
+        public class MailKit
+        {
+            public static void Start()
+            {
+                using (var client = new ImapClient())
+                {
+
+                    client.Connect("imap.mail.ru", 993, true);
+                    client.Authenticate("dinash6145@mail.ru", "apFLK2f2mLBXPgyunCnn");
+                    client.Inbox.Open(FolderAccess.ReadWrite);
+                    var ns = client.GetFolder("INBOX");
+                    //IMailFolder inbox = client.GetFolder("Test");
+                    //inbox.Open(FolderAccess.ReadWrite);
+                    var uids = ns.Search(SearchQuery.All);
+                    foreach (var uid in uids)
+                    {
+                        var message = ns.GetMessage(uid);
+
+                        Console.WriteLine(message.Subject);
+                    }
+
+                }
+            }
         }
         public class MailSend
         {

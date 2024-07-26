@@ -27,7 +27,8 @@ namespace MySMTP
                     var ns = client.GetFolder("INBOX");
                     //IMailFolder inbox = client.GetFolder("Test");
                     //inbox.Open(FolderAccess.ReadWrite);
-                    var uids = ns.Search(SearchQuery.All);
+                    //var uids = ns.Search(SearchQuery.All);
+                    var uids = ns.Search(SearchQuery.New);
                     foreach (var uid in uids)
                     {
                         var message = ns.GetMessage(uid);

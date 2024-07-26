@@ -7,7 +7,7 @@ namespace MySMTP
 {
     internal class Program
     {
-        ////https://help.mail.ru/mail/mailer/popsmtp
+        //https://help.mail.ru/mail/mailer/popsmtp
         static void Main(string[] args)
         {
             //MailSend.Send();

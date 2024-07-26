@@ -38,6 +38,7 @@ namespace MySMTP
                 }
             }
         }
+
         public class MailSend
         {
             public static void Send()
